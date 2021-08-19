@@ -64,6 +64,7 @@ Most methods are written in inherited class with the following inheritance schem
 """
 # TODO: move all CDSD dependant functions _add_Evib123Erot to a specific file for CO2.
 
+from enum import auto
 import numpy as np
 import pandas as pd
 from astropy import units as u
@@ -297,7 +298,7 @@ class BaseFactory(DatabankLoader):
                     "If using HITEMP2010 for CO2, some lines are unlabelled and therefore cannot be used at "
                     "equilibrium. This is a known issue of the HITEMP database and will soon be fixed in the "
                     "edition. In the meantime you can use:\n 'sf.df0.drop(sf.df0.index[sf.df0['v1u']==-1], inplace=True)' "
-                    "where 'sf' is SpectrumFactory object"
+                    "where 'sf' is  object"
                 )
             raise AssertionError(
                 "{0}=NaN in line database at index {1}".format(column, index)
@@ -3222,6 +3223,7 @@ class BaseFactory(DatabankLoader):
         calculations based an error percentage criteria
         """
 
+
         # Update defaults
         if cutoff is not None:
             self.params.cutoff = cutoff
@@ -3285,6 +3287,11 @@ class BaseFactory(DatabankLoader):
                 )
                 + "cm-1/(#.cm-2)). See histogram"
             ) from err
+
+        # cutoff criteria in 'auto' mode
+        if error <= cutoff:
+            cutoff = auto
+
 
         # update df1:
         self.df1 = pd.DataFrame(df[~b])
